@@ -1,0 +1,118 @@
+---
+title: "DATA607_Assignment1"
+author: "John Mazon"
+date: "8/31/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Loading Data into a Data Frame - 
+**Data Analysis of Foul Ball Impact on fans**
+
+ Often times the objective of Data Scientists is to take data in one form and transform it for simpler downstream Analysis. This is accomplished by tidying and transformation operations. Although this task has been completed in R, it could also have been tackled using other languages such as Python.
+
+**Task** -  choose one of the provided datasets on fivethirtyeight.com
+
+**Selected** - _[We Watched 906 Foul Balls To Find Out Where The Most Dangerous Ones Land](https://fivethirtyeight.com/features/we-watched-906-foul-balls-to-find-out-where-the-most-dangerous-ones-land/ )_
+- By Annette Choi
+Filed under MLB
+Published Jul. 15, 2019
+
+
+
+### INTRODUCTION
+  There were 906 foul balls collected from the most foul-heavy day at each of the the 10 stadiums that produced the most foul balls, as of June 5, 2019.The primary focus of this dataset was to observe where the most dangerous ones landed. More specifically our subset created will indicate what type of hit was most seen in specific zones of the stadium.
+
+
+
+```{r}
+#library tidyverse and ggplot2 being called to load
+library(tidyverse)
+library(ggplot2)
+```
+
+### Acquiring our Data
+Allows us to access in our original data file through our code by utilizing the cvs. In this case being stored in my Github Data607 repository
+```{r }
+foulball_dataframe <- read.csv('https://raw.githubusercontent.com/johnm1990/DATA607/master/foulballs_data.csv')
+```
+
+```{r}
+#Using dim() function to get dimension of the specified data frame:
+dim(foulball_dataframe)
+```
+We observe that upon taking in the data, returned are **906** entries of data(rows) and **7** column variables. Next we will further the work on creating a subset of the columns in our selected dataset. In addition, we will convert columns names to meaningful terms, as well as replacing non-intuitve abbreviations.
+
+
+```{r }
+#Using colnames()function we can retrieve the column names of our matrix
+colnames(foulball_dataframe)
+
+```
+  
+  
+
+## Analyzing Data Collected from the 10 most foul-ball-heavy game days to form Subset 
+
+Taking the info in our main dataset we could establish a dataset containing a subset of the columns. For the purpose of this assignment we will utilize Type of Hit, Exit Velocity and Used Zone. "Type of hit" being self explanatory as to the kind of strike technique used in baseball. "Exit Velocity" being the measure of the baseball as it comes off the bat. Lastly, "Used Zone" being referred to the stadium seating location position.For brevity sake, Zone 1 being distance referred to as behind the dugout and Zone 6/7 being on the opposite end of the stadium near the foul posts.Zone 2 through 5 being in between.
+
+```{r }
+foulball_subset_dataframe <- select(foulball_dataframe, 'type_of_hit','exit_velocity','used_zone')
+head(foulball_subset_dataframe,15)
+
+
+```
+We could now use the rename() to give our columns better labels that we assume easier to understand.
+
+```{r }
+foulball_info_dataframe <- rename(foulball_subset_dataframe,Type='type_of_hit',Velocity='exit_velocity',Zone="used_zone")
+##colnames() function to get current renamed column labels
+colnames(foulball_info_dataframe)
+#We use head() function to get an example of 15 entries using our newly renamed columns
+head(foulball_info_dataframe,15)
+
+```
+
+### Exploratory Data 
+We incorporate into our code 'group_by' as well as 'summarize' to count exactly how many foul ball entries there were according to type of hit 
+```{r }
+foulball_info_dataframe %>%
+ group_by(Type) %>%
+ summarize(count=n())
+
+```
+
+Similarly we incorporate above mentioned functions to get a count of how many foul balls existed in each Zone 
+
+```{r }
+foulball_info_dataframe %>%
+ group_by(Zone) %>%
+ summarize(count=n())
+
+```
+Lastly we incorporate above mentioned functions to get a compliation count of how many foul balls existed by hit type in each Zone
+
+```{r }
+foulball_info_dataframe %>%
+ group_by(Type, Zone) %>%
+ summarize(count=n())
+
+```
+
+### Analysis Graphics 
+
+```{r, echo=FALSE}
+ggplot(foulball_info_dataframe, mapping = aes(Zone))+
+    geom_bar(aes(fill=Type))+
+    xlab('Zone')+labs(fill='Type of Hit')+geom_text(stat='count',aes(label = ..count..,y=..count..),vjust=1.0)+
+    theme(axis.text.x = element_text(angle = 90))+
+    ggtitle('Foul Ball Analytics') + theme(plot.title = element_text(hjust = 0.5))
+
+##Please note that the `echo = FALSE` parameter has been added to the code chunk to prevent printing of the R code that generated the graphic.I've added this into may RMarkdown to gain practice using the command.
+```
+
+### Conclusion
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In conclusion, based on the subset we've created for the purpose of this assignment, Fly balls it seems appear most often in every zone.Additionally, Zone 1 coming in at 278 occurrences seems to see the most variety of foul balls.Zones 6 and 7 see the least amount of foul ball impact. To extend the work on this particular dataset, it would be interesting to take into account how many of the foul balls that impacted fans were due to holes in the safety netting. It is said that MLB have been slowly installing more netting around the field to protect fans. So it would be interesting to create another dataset comparing foul ball impacts on fans post and pre installing of the safety nets.
