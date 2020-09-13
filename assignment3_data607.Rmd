@@ -1,0 +1,135 @@
+---
+title: "Assignment 3 - DATA 607"
+author: "John Mazon"
+date: "9/12/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Question #1
+Imported the .csv of the 173 majors listed in fivethirtyeight.com’s College Majors dataset. Goal is identify using code which majors contain either "Data" or "statistics" 
+
+```{r}
+library(RCurl)
+
+#The RCurl package is an R-interface to the libcurl library that provides HTTP facilities. This allows us to download files from Web servers, post forms, use HTTPS (the secure HTTP), use persistent connections, upload files, use binary content, handle redirects, password authentication, etc. 
+
+y <- getURL("https://raw.githubusercontent.com/johnm1990/DATA607/master/majors-list.csv")
+themajors <- read.csv(text=y)
+
+mymajorsdataframe <- data.frame(themajors)
+contain_data_or_stats <- subset(mymajorsdataframe, grepl("DATA", Major) | grepl("STATISTICS", Major))
+
+#grep, grepl, regexpr, gregexpr and regexec search for matches to argument pattern within each element of a character vector: they differ in the format of and amount of detail in the results.
+
+contain_data_or_stats
+
+```
+
+## Question #2
+Task at hand was to write code that transforms the list of fruits and format of[c" "," ",]
+**str_c** used for building up a matrix of strings. Each input argument forms a column, and is expanded to the length of the longest argument, using the usual recyling rules. 
+**writeLines** is used with a text connection, and the default separator is converted to the normal separator for that platform
+**unlist** simplifies to produce a vector which contains all the atomic components which occur in x
+```{r}
+library(stringr)
+
+my_list_of_fruits <- '[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+
+[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+
+[9] "elderberry"   "lime"         "lychee"       "mulberry"    
+
+[13] "olive"        "salal berry"'
+
+
+my_vector <- c(unlist(str_extract_all(my_list_of_fruits, "\\b[A-Za-z]+\\b")))
+
+vector_string <- str_c('"', my_vector, '"', collapse = ", " )
+
+my_vector_list <- str_c('c(', vector_string, ')', collapse = " " )
+
+
+writeLines(my_vector_list)
+
+
+```
+
+
+## Question #3
+Describe, in words, what these expressions will match:
+```{r}
+library(stringr)
+```
+
+
+ (.)\1\1 - The same character appearing three times 
+```{r}
+str_view(stringr::words, "(.)\1\1 ",match=T)
+```
+
+ "(.)(.)\\2\\1" - A pair of characters followed by the same characters in reversed order.  
+```{r}
+str_view(stringr::words, "(.)(.)\\2\\1",match=T)
+
+```
+(..)\1 - Any two characters repeated 
+```{r}
+str_view(stringr::words, "(..)\1",match=T)
+
+```
+"(.).\\1.\\1" - A character followed by any character, the original character, other character, the original character once again 
+```{r}
+str_view(stringr::words, "(.).\\1.\\1",match=T)
+
+```
+"(.)(.)(.).*\\3\\2\\1" - Three characters followed by zero or more characters of any kind followed by the same three characters but in reverse order. 
+```{r}
+str_view(stringr::words, "(.)(.)(.).*\\3\\2\\1",match=T)
+
+```
+
+
+## Question #4
+Construct regular expressions to match words that:
+
+
+    Start and end with the same character.
+    
+```{r}
+str_view(stringr::words, "^(.).*\\1$",match=T)
+
+```
+    
+    str_sub(x, "^(.).*\\1$", match = TRUE)
+    
+    Contain a repeated pair of letters (e.g. "church" contains "ch" repeated twice.)
+```{r}
+str_view(stringr::words, "([A-Za-z][A-Za-z]).*\\1",match=T)
+
+```
+    
+    
+    Contain one letter repeated in at least three places (e.g. "eleven" contains three "e"s.)
+```{r}
+str_view(stringr::words, "(.).*\\1.*\\1",match=T)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
