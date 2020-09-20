@@ -1,0 +1,212 @@
+---
+title: "Project 1 - Chess Tournament"
+author: "John Mazon"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Data Analysis for Chess Tournament
+
+```{r}
+#calling in the library for RCurl and stringr
+library(RCurl)
+library(stringr)
+
+```
+### Incorporating text file from Github repo source 
+
+Used to read in the original text file from an accessible location. In this case i've uploaded the tournament info text file into my gitub repo
+```{r, warning=FALSE}
+txt_file2 <- readLines("https://raw.githubusercontent.com/johnm1990/DATA607/master/tournamentinfo.txt")
+# preview the first 10 lines
+txt_file2[1:10]
+
+#preview for the last lines showing the players
+txt_file2[190:196]
+```
+
+## Generating a CSV file - extract the players Names
+
+```{r}
+## purpose is to extract the players names
+# below creates an empty vector to store player names ie. [players_names]. We use mode character in this case to take in the strings
+player_names <- vector(mode = "character")
+# start on the 5th line since this is where the names start, this can be see from raw txt on github
+l <- 5
+# implementing a while loop. while l is smaller than the number of lines in the text file. 
+while(l < length(txt_file2)) {
+  # extract 8th to 40th elements of the current line and add to vector player_names
+  player_names <- c(player_names, substr(txt_file2[l], 8, 40))
+  
+  #print the name of the current in the loop just for reference
+  print(substr(txt_file2[l], 8, 40))
+  
+  # increase the line number by 3 [on to the next name]
+  l <- l + 3
+  
+  }
+
+```
+## Cleaning up the data for player names
+```{r}
+# remove leading and trailing whitespace. trimws returns a character string with leading and/or trailing whitespaces removed. 
+player_names <- trimws(player_names)
+
+
+# make only the first letters of name and surname upper case. I used str_to_title which will accomplish this.
+player_names <- str_to_title(player_names)
+# preview the first ten player names. we use this head function as reference to see our result so far
+head(player_names, 10)
+
+
+```
+## Extracting and organizing state info
+```{r}
+## grab the state information for all players
+# create an empty vector to store player states
+player_states <- vector(mode = "character")
+# start on the 6th line
+l <- 6
+# while l is smaller than the number of lines in the text file
+while(l < length(txt_file2)) {
+  # extract 4th and 5th elements of the current line and add to vector player_states
+  player_states <- c(player_states, substr(txt_file2[l], 4, 5))
+  # increase the line number by 3
+  print(substr(txt_file2[l], 4, 5))
+  l <- l + 3
+}
+```
+## Cleaning up the data for the states
+```{r}
+# remove leading and trailing whitespace. trimws returns a character string with leading and/or trailing whitespaces removed. 
+player_states <- trimws(player_states)
+
+# preview the first ten player states. we use this head function as reference to see our result so far
+head(player_states, 10)
+
+```
+## Total Points Extracting information
+
+```{r}
+## extract Total Number of Points for all players
+# create an empty vector to store player points
+player_points <- vector(mode = "character")
+# start on the 5th line
+l <- 5
+# while l is smaller than the number of lines in the text file
+while(l < length(txt_file2)) {
+  # extract 42nd to 44th elements of the current line and add to vector player_points
+  player_points <- c(player_points, substr(txt_file2[l], 42, 44))
+  # increase the line number by 3
+  print(substr(txt_file2[l], 42, 44))
+  l <- l + 3
+}
+```
+
+
+```{r}
+# as.numeric funcion to convert to numeric. 
+player_points <- as.numeric(player_points)
+# preview the first five player points
+head(player_points, 5)
+```
+## Pre-rating Extracting information
+
+```{r}
+## below was created to extract the players pre-rating 
+# create an empty vector to store player ratings
+player_rating <- vector(mode = "character")
+# start on the 6th line
+l <- 6
+# while l is smaller than the number of lines in the text file
+while(l < length(txt_file2)) {
+  # extract 23rd to 26th elements of the current line and add to vector player_rating
+  player_rating <- c(player_rating, substr(txt_file2[l], 23, 26))
+  # increase the line number by 3
+  print(substr(txt_file2[l], 23, 26))
+  l <- l + 3
+}
+
+```
+
+
+```{r}
+# convert to numeric
+player_rating <- as.numeric(player_rating)
+# preview the first five player ratings
+head(player_rating, 5)
+
+```
+## Opponents Extracting information
+
+```{r}
+## used to extract which opponents each player played against
+# create an empty list to store each player's opponents
+player_opponents <- vector("list", length(player_names))
+# start on the 5th line
+l <- 5
+# list position
+p <- 1
+# while l is smaller than the number of lines in the text file
+while(l < length(txt_file2)) {
+  # for i in 51, 57, 63, 69, 75, 81, 87
+  for(i in seq(51, 87, by = 6)) {
+    # extract ith and (i+1)th elements of the current line and add it to the list for pth player
+    player_opponents[[p]] <- c(player_opponents[[p]], substr(txt_file2[l], i, i+1))
+  }
+  # increase the line number by 3
+  l <- l + 3
+  # increase list position by 1
+  p <- p + 1
+}
+```
+
+```{r}
+
+# convert each element of list to numeric vector
+player_opponents <- lapply(player_opponents, as.numeric)
+head(player_opponents)
+
+```
+## Avg rating calculation
+
+
+```{r}
+## used to calculate the average pre chess rating of Opponents for all players
+# create an empty vector to store average opponent ratings
+avg_rating <- vector(mode = "numeric")
+# for each player
+for(i in 1:length(player_opponents)) {
+  # find which opponents the player had
+  opponents_ind <- player_opponents[[i]]
+  # remove missing values if there are any
+  opponents_ind <- na.omit(opponents_ind)
+  # find the average rating of opponents
+  avg_rating[i] <- mean(player_rating[opponents_ind])
+}
+# round the average rating to nearest integer
+avg_rating <- round(avg_rating)
+# preview the first four player average rating of opponents
+head(avg_rating, 4)
+
+# create the data frame
+df_tournament <- data.frame(Player_Name = player_names,
+                            Player_State = player_states,
+                            Total_Points = player_points,
+                            Player_Pre_Rating = player_rating,
+                            Avg_Opponents_Pre_Rating = avg_rating,
+                            stringsAsFactors = FALSE)
+# preview the first four lines of the data frame
+head(df_tournament, 4)
+```
+
+## Writing data to CSV [absolute path]
+
+```{r}
+# As instructed in the Project 1 rubric, we did NOT include a relative path. Instead we used our absolute path to write the CSV
+write.csv(df_tournament, "C:\\Users\\localadmin\\Documents\\Data607\\DATA 607\\project1\\final\\tournament.csv", row.names = FALSE)
+```
