@@ -1,0 +1,144 @@
+---
+title: "Week 5 Assignment - Tidying and Transforming Data"
+author: "John Mazon"
+date: "9/26/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### MYSQL Database integration with R
+
+The MYSQL database table created for this assignment contains arrival delays for two airlines across five destinations
+
+#### Additional packages installed
+Please note below additional packages installed. The formattable package is used to transform vectors and data frames into more readable and impactful tabular formats. 
+Package 'conflicted' solved an issue with the rename func as it pertains to knit/html.
+
+install.packages("formattable")
+install.packages("conflicted")
+
+```{r}
+library(tidyverse)
+library(RMySQL)
+library(formattable)
+
+```
+
+
+```{r}
+##DBconnect was utilized in this assignment to authenticate/pull in the flight delay information into R
+my.database = dbConnect(MySQL(), user='root', password = 'Password1', dbname='flightsandstatus', host='localhost')
+dbListTables(my.database)
+
+```
+Using fetch function we are able to select all the row from our flightsandstatus database [table = airlines_info1]
+```{r}
+airlines_status <- fetch(dbSendQuery(my.database, "SELECT * FROM airlines_info1 ORDER BY ID"))
+dim(airlines_status)
+colnames(airlines_status)
+summary(airlines_status)
+```
+
+Experimented with the tibble func below for the first time. Tibbles have a refined print method that shows only the first 10 rows, and all the columns that fit on screen. This makes it much easier to work with large data.
+```{r}
+airline_statusinfo <- as_tibble(airlines_status)
+airline_statusinfo
+
+```
+Note the use of the conflicted library below was helpful in tackling a difficult issue of knitting to html with the rename func used in our R code. Similarly from assignment 2, it is ideal for us to rename often time certain data which is not easy to understand/or to better the appearance of certain data such as columns. Also note the dplyr::rename being utilized in this scenario.
+```{r}
+library(conflicted)
+library(dplyr)
+
+airlinestatusinfo9 <- dplyr::rename(airline_statusinfo,"Los Angeles"="cities_losangeles",
+          "Phoenix" = "cities_phoenix",
+          "San Diego" = "cities_sandiego",
+          "San Francisco" = "cities_sanfrancisco",
+          "Seattle" = "cities_seattle"
+)
+
+print(airlinestatusinfo9)
+
+```
+## Data Tidying 
+Note below we are using the gather, select and spread func to tidy/better organize the flights info to later on be able to manipulate and do calculations. We were encouraged to use a 'wide' structure so that we are later able to transform it.
+
+
+```{r}
+airline_statusinfo8 <- airlinestatusinfo9 %>% 
+  gather(City, count, -ID, -Airline, -Status) %>% 
+  select(Airline, Status, City, count) %>% 
+  spread(Status, count)
+
+  
+print(airline_statusinfo8)
+
+
+```
+
+The formattable package is used to transform vectors and data frames into more readable and impactful tabular formats. 
+```{r}
+formattable(airline_statusinfo8)
+
+```
+## Data Analysis 
+### Perform analysis to compare the arrival delays for the two airlines.
+```{r}
+
+airline_statusinfo7 <- airline_statusinfo8 %>%
+  dplyr::mutate(
+         ontime_rate = `on time` / (delayed + `on time`),
+         delay_rate = delayed / (delayed + `on time`),
+         flights = delayed + `on time`,
+         percent_on_time = round(`on time`/flights*100, 2),
+         
+         
+  )
+formattable(airline_statusinfo7)
+
+```
+Using ggplot2 to gather the delay information based on airline
+```{r}
+library(ggplot2)
+Alaska_delays<-dplyr::filter(airline_statusinfo7, Airline=="ALASKA")
+Alaska_delays
+
+AMWEST_delays<-dplyr::filter(airline_statusinfo7, Airline=="AM WEST")
+AMWEST_delays
+
+```
+
+```{r}
+compare_data <- airline_statusinfo7 %>% 
+  group_by(Airline) %>%
+  dplyr::summarize(OnTime = sum(`on time`), Delayed = sum(delayed), 
+            PercentOnTime = round(OnTime/sum(OnTime,Delayed),2))%>%
+  select(Airline, PercentOnTime)
+compare_data %>% dplyr::arrange(desc(PercentOnTime))
+
+
+
+```
+
+```{r}
+ ggplot(airline_statusinfo7, aes(x = Airline, y=delay_rate, fill = City)) +  
+          geom_bar(stat="identity",position="dodge") + 
+          xlab("Airlines") + ylab("Delays") 
+
+
+```
+```{r}
+ ggplot(airline_statusinfo7, aes(x = Airline, y=ontime_rate, fill = City)) +  
+          geom_bar(stat="identity",position="dodge") + 
+          xlab("Airlines") + ylab("On time rate") 
+
+
+```
+
+## In conclusion
+
+in conclusion we can witness on the chart how AM WEST	has slightly higher delay percentage than Alaska. Also we see how ontime rate is very similar/close for both airlines.  
+
