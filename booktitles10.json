@@ -1,0 +1,34 @@
+{"books" :[
+    {
+    "Book Title" : "Nineteen Eighty-Four",
+    "Genre" : "Science Fiction",
+    "Author" : "George Orwell",
+    "Language" : "English",
+    "Pages" : 328,
+    "Release Year" : "1949"
+    },
+    {
+     "Book Title" : "Mars",
+     "Genre" : "Science Fiction",
+    "Author" : "Mari Wolf, Frederic Brown",
+    "Language" : "English",
+    "Pages" : 250,
+    "Release Year" : "2018"
+    },
+    {
+     "Book Title" : "Solaris",
+     "Genre" : "Science Fiction",
+    "Author" : "Stan Lem",
+    "Language" : "English",
+    "Pages" : 204,
+    "Release Year" : "1961"
+    },
+    {
+     "Book Title" : "The Time Machine",
+     "Genre" : "Science Fiction",
+    "Author" : "H.G Wells",
+    "Language" : "English",
+    "Pages" : 84,
+    "Release Year" : "1895"
+    }]
+}
