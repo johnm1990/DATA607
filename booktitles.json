@@ -1,0 +1,30 @@
+{"books" :[
+    {
+    "Book Title" : "Nineteen Eighty-Four",
+    "Author" : "George Orwell",
+    "Subject" : "Science Fiction",
+    "Pages" : 328,
+    "Release Year" : "1949"
+    },
+    {
+     "Book Title" : "Mars",
+    "Author" : "Mari Wolf, Frederic Brown",
+    "Subject" : "Science Fiction",
+    "Pages" : 250,
+    "Release Year" : "2018"
+    },
+    {
+     "Book Title" : "Solaris",
+    "Author" : "Stan Lem",
+    "Subject" : "Science Fiction",
+    "Pages" : 204,
+    "Release Year" : "1961"
+    },
+    {
+     "Book Title" : "The Time Machine",
+    "Author" : "H.G Wells",
+    "Subject" : "Science Fiction",
+    "Pages" : 84,
+    "Release Year" : "1895"
+    }]
+}
