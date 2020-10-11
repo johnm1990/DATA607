@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<books>
+    <book id="1">
+        <BookTitle>Nineteen Eighty-Four</BookTitle>
+        <Author>George Orwell</Author>
+        <Subject>Science Ficiton</Subject>
+        <Pages>328</Pages>
+        <Release Year>1949</Release Year>
+    </book>
+    <book id="2">
+        <BookTitle>Mars</BookTitle>
+        <Author>Mari Wolf,Frederic Brown</Author>
+        <Subject>Science Ficiton</Subject>
+        <Pages>250</Pages>
+        <ReleaseYear>2018</ReleaseYear>
+    </book>
+    <book id="3">
+        <BookTitle>Solaris</BookTitle>
+        <Author>Stan Lem</Author>
+        <Subject>Science Ficiton</Subject>
+        <Pages>204</Pages>
+        <Release Year>1961</Release Year>
+    </book>
+    <book id="4">
+        <BookTitle>The Time Machine</BookTitle>
+        <Author>H.G Wells</Author>
+        <Subject>Science Ficiton</Subject>
+        <Pages>84</Pages>
+        <Release Year>1895</Release Year>
+    </book>
+</books>
