@@ -12,7 +12,7 @@
     <book id="2">
         <BookTitle>Mars</BookTitle>
         <Genre>Science Fiction</Genre>
-        <Author>Mari Wolf,Frederic Brown</Author>
+        <Author>Mari Wolf, Frederic Brown</Author>
         <Language>English</Language>
         <Pages>250</Pages>
         <ReleaseYear>2018</ReleaseYear>
