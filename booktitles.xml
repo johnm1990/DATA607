@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <books>
+
     <book id="1">
         <BookTitle>Nineteen Eighty-Four</BookTitle>
         <Author>George Orwell</Author>
@@ -27,5 +28,6 @@
         <Subject>Science Ficiton</Subject>
         <Pages>84</Pages>
         <Release Year>1895</ReleaseYear>
-    </book>
+   </book>
+
 </books>
