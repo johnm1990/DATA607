@@ -1,0 +1,150 @@
+---
+title: "Assignment 7"
+author: "John Mazon"
+date: "10/10/2020"
+class: "DATA 607"
+output: html_document
+---
+# Working with XML and JSON in R
+
+installed the packages below to be able to properly work with xml,json, html data
+
+install.packages("xml2")
+install.packages("jsonlite")
+
+```{r load-packages, include=FALSE}
+#loading required packages 
+library(stringr)
+library(DT)
+library(xml2)
+library(rvest)
+library(conflicted)
+library(XML)
+
+```
+
+## CSV,HTML,XML,JSON format of all book data input - 
+Picked three of your favorite books on one of your favorite subjects.   At least one of the books has more than one author.  For each book, included the title, authors, language and release year
+```{r}
+
+#load the target data
+booksdata<-read.csv("https://raw.githubusercontent.com/johnm1990/DATA607/master/Booklist10.csv", stringsAsFactors = FALSE)
+
+#show target data
+datatable(booksdata)
+
+
+```
+HTML- import of book data in HTML format to parse
+```{r}
+library(rvest)
+library(conflicted)
+
+#read in RAW HTML data from online Github repo
+RawHTML1 <- read_html("https://raw.githubusercontent.com/johnm1990/DATA607/master/booktitles11.html")
+
+
+#parse file from imported rawHTML
+html_parsed1 <- htmlParse(RawHTML1)
+
+#create data frame
+html_table<-readHTMLTable(html_parsed1, stringsAsFactors = FALSE)
+html_table<-html_table[[1]]
+
+#view dataframe
+datatable(html_table)
+
+
+```
+XML - import of book data in XML format to parse
+
+```{r}
+library(XML)
+library(conflicted)
+#read in RAW XML data from online Github repo
+
+RawXML2 <- read_xml("https://raw.githubusercontent.com/johnm1990/DATA607/master/booktitles10.xml")
+
+#parse file from imported rawXML
+
+xml_parsed2<-xmlParse(RawXML2)
+
+#create data frame
+xml_table2<-xmlToDataFrame(xml_parsed2, stringsAsFactors = FALSE)
+
+#view dataframe
+datatable(xml_table2)
+
+
+```
+
+
+JSON - import of book data in JSON format to parse
+
+```{r}
+#load packages
+library(jsonlite)
+library(rvest)
+
+#read in RAW JSON data from online Github repo
+RawJSON1<-read_json("https://raw.githubusercontent.com/johnm1990/DATA607/master/booktitles10.json")
+
+#create data frame
+json_table<-do.call("rbind", lapply(RawJSON1[[1]], data.frame, stringsAsFactors = FALSE))
+
+#view dataframe
+datatable(json_table)
+
+
+
+```
+
+## COMPARISON OF DATA FRAMES
+
+##HTML vs JSON
+
+
+```{r}
+#The two dataframes are almost identical. 
+
+all.equal(html_table,json_table)
+
+#The two dataframes are identical if the data type of pages is converted to integer.
+
+
+all.equal(as.integer(html_table$Pages), json_table$Pages)
+
+
+```
+
+##XML vs JSON
+
+```{r}
+
+#The two dataframes are almost identical. 
+
+all.equal(xml_table2,json_table)
+
+
+#The two dataframes are identical if the data type of pages is converted to integer.
+
+all.equal(as.integer(xml_table2$Pages), json_table$Pages)
+
+```
+
+
+##HTML vs XML
+
+```{r}
+
+# appears the all.equal function is detecting some sort of name string mismatch in the writing of code between HTML and XML. This is may be minor detection in the creation of the string
+all.equal(html_table,xml_table2)
+
+
+```
+
+## In Conclusion
+
+The Data frames between HTML, JSON and XML are for the most part identical. It is important to point out that at first certain components such as 'pages' column was reading in as character, but with a 'as.integer' implementation, the result was identical. 
+
+
