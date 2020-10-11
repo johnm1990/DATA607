@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<books>
+
+    <book id="1">
+        <BookTitle>Nineteen Eighty-Four</BookTitle>
+        <Author>George Orwell</Author>
+        <Subject>Science Ficiton</Subject>
+        <Pages>328</Pages>
+        <Release Year>1949</Release Year>
+    </book>
+    <book id="2">
+        <BookTitle>Mars</BookTitle>
+        <Author>Mari Wolf,Frederic Brown</Author>
+        <Subject>Science Ficiton</Subject>
+        <Pages>250</Pages>
+        <Release Year>2018</Release Year>
+    </book>
+    <book id="1">
+        <BookTitle>Nineteen Eighty-Four</BookTitle>
+        <Author>George Orwell</Author>
+        <Subject>Science Ficiton</Subject>
+        <Pages>328</Pages>
+        <Release Year>1949</Release Year>
+    </book>
+    <book id="2">
+        <BookTitle>Mars</BookTitle>
+        <Author>Mari Wolf,Frederic Brown</Author>
+        <Subject>Science Ficiton</Subject>
+        <Pages>250</Pages>
+        <Release Year>2018</Release Year>
+    </book>
+
+</books>
