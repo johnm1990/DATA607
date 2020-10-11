@@ -6,7 +6,7 @@
         <Author>George Orwell</Author>
         <Subject>Science Ficiton</Subject>
         <Pages>328</Pages>
-        <Release Year>1949</ReleaseYear>
+        <ReleaseYear>1949</ReleaseYear>
     </book>
     <book id="2">
         <BookTitle>Mars</BookTitle>
@@ -20,14 +20,14 @@
         <Author>Stan Lem</Author>
         <Subject>Science Ficiton</Subject>
         <Pages>204</Pages>
-        <Release Year>1961</ReleaseYear>
+        <ReleaseYear>1961</ReleaseYear>
     </book>
     <book id="4">
         <BookTitle>The Time Machine</BookTitle>
         <Author>H.G Wells</Author>
         <Subject>Science Ficiton</Subject>
         <Pages>84</Pages>
-        <Release Year>1895</ReleaseYear>
+        <ReleaseYear>1895</ReleaseYear>
    </book>
 
 </books>
