@@ -1,0 +1,79 @@
+---
+title: "Week 9 Assignment"
+author: "John Mazon"
+date: "10/24/2020"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(jsonlite)
+library(tidyverse)
+library(httr)
+library(stringr)
+library(DT)
+
+```
+
+## Introduction
+The New York Times web site provides a rich set of APIs, as described here:https://developer.nytimes.com/apis
+We started by signing up for an API key.The task was to choose one of the New York Times APIs, construct an interface in R to read in the JSON data, and transform it into an R DataFrame.
+
+#### ESTABLISH THE API PATH and KEY (PREPARE THE DATA)
+Chose the topstories from the HTTP Request section of https://developer.nytimes.com/
+Below we imported the apikey and path into respective objects
+We created the initial dataframe 'magazine_df' 
+
+```{r}
+
+
+apikey <- "CwEonEZVnTIZET6h3EHtAKCZF1PmchR7"
+url <- paste0("https://api.nytimes.com/svc/topstories/v2/health.json", "?api-key=", apikey)
+magazine <- GET(url)
+# names of the arrays from the API call
+
+magazine_text <- content(magazine, "text")
+magazine_df <- data.frame(fromJSON(magazine_text))
+
+
+```
+#### Workflow and Viewing Info of the data frame
+Below we take a brief look at the column names currently of the dataframe
+
+```{r}
+(c_names <- names(magazine_df))
+
+```
+
+## TIDY/ORGANIZE THE DATA 
+Below we tidy/organize the data by selecting the specific information we would like to display
+We label our column names as desired to match the content
+```{r}
+
+FilteredData = magazine_df[, c("results.section", "results.title","results.abstract","results.url" )]
+colnames(FilteredData) = c("Section","Title","Abstract","Link") 
+
+colnames(FilteredData)
+str(FilteredData)
+
+```
+
+Using 'datatable' function we pull in our final 'FilteredData' frame to organize the information to be displayed. We can also customize coloring of borders as well as alignment here, 
+```{r}
+
+datatable(FilteredData, colnames = c('Entry #', 'Section', 'Title', 'Abstract', 'Link'), class = 'cell-border stripe', options = list(
+  initComplete = JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': '#5a5a5a', 'color': '#fff', 'text-align': 'center !important'});",
+    "$(this.api().table().body()).css({'color': '#000', 'text-align': 'center !important'});",
+    "}")
+))
+
+```
+
+
+
+## Conclusion
+The initial dataframe created after the importing of the API path and url with key is heavily untidy. We need the help of a few tools in order to structure the data. Using library DT 'datatable' it makes it much easier to create a pleasant visual distribution of the data including search option
