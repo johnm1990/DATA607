@@ -1,0 +1,105 @@
+---
+title: "DATA 606 Data Project Proposal"
+author: "John Mazon"
+---
+
+### Data Preparation
+
+
+```{r setup, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
+library(RCurl)
+library(Hmisc)
+library(ggplot2)
+
+```
+
+
+### Research question 
+
+Is there a correlation in diamond value with respect to it's carat amount and cut quality?  
+
+
+### Cases 
+
+This dataset contains the prices and various attributes of almost 54,000 diamonds. Specifically, it is a data frame with 53940 rows and 10 variables. Some characteristics specified for each row are price[in U.S Dollars], carat, cut quality, color, clarity, total depth percentage and table.   
+
+
+
+### Data collection 
+
+This classic dataset has been found on the Kaggle site. 
+
+
+
+### Type of study 
+
+This is an observational study since we are trying to infer from already collected data.No specific experiment is being conducted data is being observed only.
+
+
+
+### Data Source 
+
+Original data is from Kaggle site:
+https://www.kaggle.com/shivam2503/diamonds
+
+
+
+
+### Dependent Variable
+
+The response variable is the diamond value and it is quantitative.
+
+
+### Independent Variable
+
+Carat amount is the quantitative independent variable
+Cut quality is the qualitative independent variable
+
+
+### Relevant summary statistics 
+
+**Provide summary statistics for each the variables. Also include appropriate visualizations related to your research question (e.g. scatter plot, boxplots, etc). This step requires the use of R, hence a code chunk is provided below. Insert more code chunks as needed.**
+
+```{r}
+my_data <- getURL("https://raw.githubusercontent.com/johnm1990/DATA607/master/diamonds.csv")
+diamond_info <- read.csv(text=my_data)
+
+diamond_df <- data.frame(diamond_info)
+
+
+```
+
+```{r}
+summary(diamond_df$price)
+
+
+```
+
+```{r}
+
+summary(diamond_df$carat)
+
+
+```
+
+```{r}
+
+summary(diamond_df$cut)
+
+```
+
+```{r}
+boxplot(diamond_df$price, main = "Price")
+
+```
+
+```{r}
+
+boxplot(diamond_df$carat ~ diamond_df$cut)
+```
+
+
+
+
+
+
