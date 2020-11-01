@@ -1,0 +1,297 @@
+---
+title: "Week 10 Assignment –Sentiment Analysis"
+author: "John Mazon"
+date: "10/31/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#We load the necessary libraries to use throughout the demonstration. The tools used vary from for use of tidying the information, to plotting graphics and creating word cloud.
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(janeaustenr)
+library(stringr)
+library(wordcloud)
+library(tidytext)
+library(dplyr)
+library(harrypotter) 
+library(tibble)
+
+```
+
+## Introduction
+
+For the Week 10 assignment using 'In Text Mining with R', Chapter 2 looks at Sentiment Analysis.  
+In this assignment, we started by getting the primary example code from chapter 2 working in an R Markdown document.  
+You should provide a citation to this base code.  You’re then asked to extend the code in two ways:
+
+Later in the demonstration we work with a different corpus of our choosing, and
+we ncorporate at least one additional sentiment lexicon 
+
+
+## Section 1 - Using Lexicons with the Tidytext Package in R [Re-create base analysis]
+Source:
+    AFINN from Finn Årup Nielsen
+    bing from Bing Liu and collaborators
+    nrc from Saif Mohammad and Peter Turney
+    
+The Tidytext package draws upon three main lexicons for sentiment analysis: “Bing,” “AFINN,” and “NRC.” 
+```{r}
+#The AFINN lexicon grades words between -5 and 5 (positive scores indicate positive sentiments).
+get_sentiments("afinn")
+
+```
+
+```{r}
+#The NRC lexicon categorizes sentiment words into positive, negative, anger, anticipation, disgust, fear, joy, sadness, surprise and trust
+get_sentiments("nrc")
+
+```
+
+```{r}
+#The Bing lexicon uses a binary categorization model that sorts words into positive or negative positions
+get_sentiments("bing")
+```
+
+
+## Section 2 - janeaustenr - An R Package for Jane Austen’s Complete Novels
+
+This package provides access to the full texts of Jane Austen’s 6 completed, published novels. The UTF-8 plain text for each novel was sourced from Project Gutenberg, processed a bit, and is ready for text analysis. Each text is in a character vector with elements of about 70 characters.
+
+Below we use some functionality of dplyr to organize and tidy the data for analysis. In the case below we see the output helps us create a dataframe displaying sentiment count 
+
+
+Emma, by Jane Austen, is a novel about youthful hubris and romantic misunderstandings. It is set in the fictional country village of Highbury and the surrounding estates of Hartfield, Randalls and Donwell Abbey, and involves the relationships among people from a small number of families.
+
+```{r}
+tidy_books123 <- austen_books() %>%
+  group_by(book) %>%
+  mutate(linenumber = row_number(),
+         chapter = cumsum(str_detect(text, regex("^chapter [\\divxlc]", 
+                                                 ignore_case = TRUE)))) %>%
+  ungroup() %>%
+  unnest_tokens(word, text)
+
+nrc_joy <- get_sentiments("nrc") %>% 
+  filter(sentiment == "joy")
+
+tidy_books123 %>%
+  filter(book == "Emma") %>%
+  inner_join(nrc_joy) %>%
+  count(word, sort = TRUE) %>%
+  head()
+
+```
+Please note the creation of jane_austen_sentiment1 using functionality of sentiments[bing]
+```{r}
+jane_austen_sentiment1 <- tidy_books123 %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(book, index = linenumber %/% 80, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative)
+
+```
+Graphical depiction using ggplot of frame jane_austen_sentiment1 displaying sentiment high an low levels for the novels
+```{r}
+ggplot(jane_austen_sentiment1, aes(index, sentiment, fill = book)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~book, ncol = 2, scales = "free_x")
+
+```
+
+
+## Section 3 - Pride & Prejudice
+Demonstration using dplyr/filter for Pride & Prejudice. We are able to depict using the head function some of the line number and word distribution 
+
+Pride and Prejudice is a novel of manners by Jane Austen, first published in 1813. The story follows the main character, Elizabeth Bennet, as she deals with issues of manners, upbringing, morality, education, and marriage in the society of the landed gentry of the British Regency.
+
+```{r}
+pride_prejudice1 <- tidy_books123 %>% 
+  filter(book == "Pride & Prejudice")
+
+pride_prejudice1%>%
+  head()
+
+```
+
+Using a few techniques of bindings, mutate and inner_join to compile sentiment values denoting 'positive' and 'negative'.
+As you can see our information indicates the total sentiment values of negative	3324 and positive	2312	
+```{r}
+afinn1 <- pride_prejudice1 %>% 
+  inner_join(get_sentiments("afinn")) %>% 
+  group_by(index = linenumber %/% 80) %>% 
+  summarise(sentiment = sum(value)) %>% 
+  mutate(method = "AFINN")
+
+bing_and_nrc1 <- bind_rows(pride_prejudice1 %>% 
+                            inner_join(get_sentiments("bing")) %>%
+                            mutate(method = "Bing et al."),
+                          pride_prejudice1 %>% 
+                            inner_join(get_sentiments("nrc") %>% 
+                                         filter(sentiment %in% c("positive", 
+                                                                 "negative"))) %>%
+                            mutate(method = "NRC")) %>%
+  count(method, index = linenumber %/% 80, sentiment) %>%
+  spread(sentiment, n, fill = 0) %>%
+  mutate(sentiment = positive - negative)
+
+get_sentiments("nrc") %>% 
+     filter(sentiment %in% c("positive", 
+                             "negative")) %>% 
+  count(sentiment)
+
+```
+
+Utilizing a facetwrap and ggplot to bindrows of values afinn1 and bing_and_nrc1 to display the levels of sentiment for each Lexicon 
+```{r}
+bind_rows(afinn1, 
+          bing_and_nrc1) %>%
+  ggplot(aes(index, sentiment, fill = method)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~method, ncol = 1, scales = "free_y")
+
+```
+
+
+
+### Section 4 New corpus - Philosopher's Stone[Harry Potter library]
+
+Extend analysis to new corpus and new lexicon
+We identified and implemented a different corpus to perform sentiment analysis - Philosopher's Stone
+We identified and implement an additional lexicon for sentiment analysis
+
+Creating a tibble below to view content in format for philosophers stone
+```{r}
+
+str(philosophers_stone)
+tibble(philosophers_stone)
+
+```
+
+
+```
+Formatting the content of philosophers stone to organize in the manner of displaying word by sequence in the novel
+
+```{r}
+titles1 <- c("philosophers_stone")
+books1 <- list(philosophers_stone)
+series1 <- tibble()
+
+for(i in seq_along(titles1)) {
+  
+  temp1 <- tibble(chapter = seq_along(books1[[i]]),
+                  text = books1[[i]]) %>%
+    unnest_tokens(word, text) %>%
+    mutate(book = titles1[i]) %>%
+    select(book, everything())
+  
+  series1 <- rbind(series1, temp1)
+}
+# set factor to keep books in order of publication
+series1$book <- factor(series1$book, levels = rev(titles1))
+
+
+series1
+
+
+```
+
+```{r}
+afinn1 <- series1 %>%
+        group_by(book) %>% 
+        mutate(word_count = 1:n(),
+               index = word_count %/% 500 + 1) %>% 
+        inner_join(get_sentiments("afinn")) %>%
+        group_by(book, index) %>%
+        summarise(sentiment = sum(value)) %>%
+        mutate(method = "AFINN")
+
+```
+
+Final compilation and organiazation of the content displaying the sentiment and mode
+```{r}
+afinn1 <- series1 %>%
+        group_by(book) %>% 
+        mutate(word_count = 1:n(),
+               index = word_count %/% 500 + 1) %>% 
+        inner_join(get_sentiments("afinn")) %>%
+        group_by(book, index) %>%
+        summarise(sentiment = sum(value)) %>%
+        mutate(method = "AFINN")
+
+
+afinn1
+```
+
+### WordCloud demonstrating the frequency and most seen words throughout philosophers stone
+```{r}
+series1 %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 105))
+
+```
+
+### Section 4 Lexicon - loughran 
+A dataset containing a character vector of Loughran & McDonald's (2016) constraining words list. 
+
+A tibble display of sentiment values and count
+```{r}
+loughran1 <- series1 %>%
+  right_join(get_sentiments("loughran")) %>%
+  filter(!is.na(sentiment)) %>%
+  count(sentiment, sort = TRUE)
+  
+loughran1
+
+```
+
+
+```{r}
+
+loughran1 <- bind_rows(series1 %>%
+                  group_by(book) %>% 
+                  mutate(word_count = 1:n(),
+                         index = word_count %/% 500 + 1) %>%
+                  inner_join(get_sentiments("loughran") %>%
+                                     filter(sentiment %in% c("positive", "negative"))) %>%
+                  mutate(method = "Loughran")) %>%
+        count(book, method, index = index , sentiment) %>%
+        ungroup() %>%
+        spread(sentiment, n, fill = 0) %>%
+        mutate(sentiment = positive - negative) %>%
+        select(book, index, method, sentiment)
+
+```
+
+A graphical/visual representation of the content utilizing the affin1 and loughran1. We see the lows and highs vary between methods. Afinn showing drastic higher and lowe levels of sentiment spread throughout the index. Loughran demonstrating a more compact distribution of the sentiment values.
+```{r}
+
+bind_rows(afinn1,
+          loughran1) %>%
+        ungroup() %>%
+        mutate(book = factor(book, levels = titles1)) %>%
+  ggplot(aes(index, sentiment, fill = method)) +
+  geom_bar(alpha = 0.8, stat = "identity", show.legend = FALSE) +
+  facet_grid(book ~ method)
+
+```
+
+## Citation - APA Style
+
+Austen, J., & Stafford, F. (2003). Emma (Penguin Classics) (Reissue ed.). Penguin Classics.
+
+
+Austen, J., & Tanner, T. (2002). Pride and Prejudice (Reprint. ed.). Penguin Books.
+
+
+Rowling, J. K. (2018). Harry Potter and the Philosopher’s Stone: Slytherin Edition; Black and Green (Anniversary ed.). Educa Books.
+
+
+## Conclusion
+In conclusion, we see sentiment analysis enables us to make sense of qualitative data such as novels, tweets, product reviews, and support tickets, and extract insights. By detecting positive, neutral, and negative opinions within text, you can understand how general feeling about a novel, brand, product, or service, and make data-driven decisions. With a variety of Lexicons, we utilize the english words and their associations with eight basic emotions (anger, fear, anticipation, trust, surprise, sadness, joy, and disgust) and two sentiments (negative and positive).  
+
+
