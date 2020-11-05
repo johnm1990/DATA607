@@ -1,0 +1,64 @@
+---
+title: 'Discussion/Assignment 11: Recommender Systems'
+author: "John Mazon"
+date: "11/4/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+For this week 11 Discussion post I've chosen to use Soundcloud as my recommender system of interest. The idea behind this weeks discussion/assignment is to perform in-depth Scenario Design. At it's core we experiment with generating recommendations about how to improve the site's recommendation capabilities. We first start below by answering a few basic mission specific questions.
+
+## Senario Design Analysis - SoundCloud Platform
+
+### Target Users?
+SoundCloud is home to a massive global audience. The most active target users are creators and listeners of music. Majority of SoundCloud's audience is between the ages of 18-35. SoundCloud is traditionally known for its younger millennial and Gen Z audience.Over 76* million US users interact with SoundCloud monthly. Each month, they reach more than 175 million global users
+
+
+### What are those users key goals?
+Target users key goals is to find a system to empower music creators and listeners to enjoy the world's leading social sound platform to the max. They seek a fast and simple online help channel to jointly solve problems and share experiences.
+USers mission is to share and discover unique content anywhere, anytime, on the web and on mobile. 
+
+
+### Steps to help them achieve those goals?
+SoundCloud helps artists advance their careers. The first way that SoundCloud helps artists is that SoundCloud helps individuals discover new music since it is a platform for up and coming artists rather than established artists (which is the case for Spotify). This also provides an avenue for record labels, music producers, and other artists to find an artists’ work and work together on collaborations or remixes. The second way that SoundCloud helps artists is that SoundCloud indirectly can help an artist make money through buy links on the artists’ page. The third way that SoundCloud helps artists is that it lets the world listen to an artists’ music since SoundCloud doesn’t restrict usage of their application based on an individual’s location. 
+
+On the user/spectator side of this, it helps them achieve discovery of quality music. SoundCloud has finally added an algorithm to its track recommendation system. This means the days of un-wanted autoplayed songs should be a thing of the past.The streaming platform’s new “Suggested Tracks” feature uses an algorithm to track what you listen to and like, and recommend tracks accordingly. It’s found in a new “Discover” tab. SoundCloud has added this to the homescreen, or in the search field if you’re using the app. 
+
+
+###  Does it makes sense for your selected recommender system to perform scenario design twice?
+Without a doubt it would make sense to perform scenario design twice, once for the organization and once for the organization's customers.SoundCloud’s main challenge is to scale up in order to help more users at a time, without a constantly growing support team. This would be a partial reason for the platform to brainstorm organization-side scenario design. In general I believe performing this step would be beneficial in improving organization outlook/mentality on support for it's users. 
+
+Looking at customer scenario design would makes sense because SoundCloud wants to engage users to help each other, provide quality content and make it easily accessible. Their main objective is therefore to empower creators and listeners to enjoy the world’s leading social sound platform to the max by positioning the SoundCloud forum as the preferred, fast and simple online help channel to jointly solve problems and share experiences.
+
+
+
+### Reverse Engineering Site
+
+With some careful research we find upon registering, all users have the ability to record and publish up to 120 minutes of audio content. Those who decide to pay for a Soundcloud “Pro” or “Premier” account gain access to extra features, such as more hosting space and deeper engagement analytics. Just last week, Soundcloud announced it would be introducing ads to its U.S. users for Premier users who publish frequently to large audiences. According to The Guardian, SoundCloud is the second biggest streaming music service in the world behind YouTube.
+
+The DiscoRank algorithm,  engineered by Amelie Anglade, is what SoundCloud.com uses to aggregate music on its network.
+For example, its Explore page and search results. Some key components include Metadata, this means the tracks need to be labeled and tagged properly so that they are searchable.
+Secondly, genre which in short suggests if your selected genre doesn’t appear in the Explore section, then safe to say it won’t be listed. Thirdly new Releases which are featured on the Explore tab only selects recent uploads. This means content creators should make sure trackas are being promoted as soon as its uploaded.
+It is not certain but 5-7 days seems to be the limit of edibility to appear in the Explore tab.
+Lastly, internal SoundCloud actions such as Plays, likes, reposts, comments, etc. are counted by the DiscoRank algorithm.
+
+### Recommendations
+The problem for SoundCloud which is a home to underground artists is its inability to monetize. It is company that almost went under as recently as August. It survived by laying off hundreds, replacing its CEO, and securing some much-needed cash. But, it also shot itself in the foot by failing to capitalize on the success of an entire genre built on the back of its service (SoundCoud Rap). It continues to suffer setbacks for example last month, Billboard announced that ad-supported streaming services (like SoundCloud and YouTube) will carry less weight compared to paid services when it comes to its chart rankings, starting in 2018. Meanwhile, SoundCloud's attempt at corralling paying subscribers (SoundCloud Go) was a mess.
+
+There are few recommendations Soundcloud could follow on to position itself an influential distributor.The big four recommendations among the soundcloud community forums appear to be much needed improvement in monetization, distribution, artist page display and a general website product tour/tutorial.
+
+
+
+#### References
+
+SoundCloud shows how its algorithms influence music streams - https://www.engadget.com/2017-11-20-soundcloud-algorithm-plays-stats.html
+
+
+Soundcloud vs. Spotify: Social Music and Content Marketing- 
+https://www.kunocreative.com/blog/bid/91677/soundcloud-vs-spotify-social-music-and-content-marketing
+
+
+How a Soundcloud Algorithm Propelled a Teenager from Rapping in a Basement to Working with Timbaland -
+https://jackbandy.medium.com/how-a-soundcloud-algorithm-propelled-a-teenager-from-rapping-in-a-basement-to-working-with-28962151d0f2
